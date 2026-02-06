@@ -60,17 +60,13 @@ def pripat(dis_width):
         high.append(random.randrange(10, 60, 10))
         width.append(random.randrange(50, 60, 10))
 
-def uvelich(dlin_zm,pribav,x,y,x_ism,y_ism):
-    if y_ism==0:
-        if pribav==1 and x!=dlin_zm[len(dlin_zm)-1][0]:
-            pygame.draw.circle(dis,black,(x,y),10)
-        elif pribav!=2:
-            pribav=0
-    elif x_ism==0:
-        if pribav==1 and y!=dlin_zm[len(dlin_zm)-1][1]:
-            pygame.draw.circle(dis,black,(x,y),10)
-        elif pribav!=2:
-            pribav=0
+def uvelich(dlin_zm,pribav,x,y):
+    if pribav==1 and (x!=dlin_zm[len(dlin_zm)-1][0] or y!=dlin_zm[len(dlin_zm)-1][1]):
+        pygame.draw.circle(dis,black,(x,y),10)
+    elif pribav!=2:
+        pribav=0
+    if pribav==0:
+        pygame.draw.circle(dis,black,(x,y),10)
     if pribav==0:
         dlin_zm.append([])
         pribav=2
@@ -82,18 +78,13 @@ x,y=[0,0]
 while vopr==4:
     a1=pygame.draw.rect(dis,purple,[300,156,400,100])
     masag('без полей и без припятствий',red,300,156)
-
     a2=pygame.draw.rect(dis,purple,[300,312,400,100])
     masag('без полей и с припятствий',red,300,312)
-
     a3=pygame.draw.rect(dis,purple,[300,468,400,100])
     masag('с полями и без припятствий',red,300,468)
-
     a4=pygame.draw.rect(dis,purple,[300,624,400,100])
     masag('с полями и с припятствий',red,300,624)
-    
     pygame.display.update()
-
     for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x,y=pygame.mouse.get_pos()
@@ -132,7 +123,7 @@ def bespripat():
                 x_rand,y_rand=pygame.mouse.get_pos()
     x_rand=x_rand+(10-int(str(round(x_rand))[-1:]))
     y_rand=y_rand+(10-int(str(round(y_rand))[-1:]))
-    pygame.draw.rect(dis, red, [x_rand, y_rand, snake_block, snake_block])
+    pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
     pygame.display.update()
     while x1==0.5:
         for event in pygame.event.get():
@@ -197,13 +188,13 @@ def bespripat():
                     x_rand=random.randrange(10, dis_width-10, 10)
                     y_rand=random.randrange(10, dis_width-10, 10)
             pribav=1
-            x,y,x_ism,y_ism=[x1,y1,x1_change,y1_change]
-            if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2:
+            x,y=[x1,y1]
+            if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
                 snake_speed+=5
         
         ris_zm(snake_block,dlin_zm,x1,y1)
         if x!=0:
-            pribav=uvelich(dlin_zm,pribav,x,y,x_ism,y_ism)
+            pribav=uvelich(dlin_zm,pribav,x,y)
         n=0
         if len(dlin_zm)>1:
             for i in dlin_zm:
