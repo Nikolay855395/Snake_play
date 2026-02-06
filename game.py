@@ -1,5 +1,7 @@
 import pygame
 import random
+from line_profiler import LineProfiler
+profiler = LineProfiler()
 x_rand=0
 y_rand=0
  
@@ -18,11 +20,11 @@ pygame.display.set_caption('Змейка от Skillbox')
 
 
 font_style = pygame.font.SysFont(None, 30)
- 
+@profiler
 def masag(msg,color,x1,y1): 
    mesg = font_style.render(msg, True, color)
    dis.blit(mesg, [x1, y1])
-
+@profiler
 def ris_zm(snake_block,dlin_zm,x1,y1):
     for i in range(len(dlin_zm)-1,0,-1):
         if i!=0:
@@ -33,11 +35,11 @@ def ris_zm(snake_block,dlin_zm,x1,y1):
     dlin_zm[0]=[x1,y1]
     x11,y11=dlin_zm[0]
     pygame.draw.circle(dis, black, (x11, y11), snake_block-3)
-
+@profiler
 def pola(x1,y1):
     if x1 >= dis_width or x1 <= 0 or y1 >= dis_width or y1 <= 0:
             return True 
-
+@profiler
 def bespola(x1,y1):
     if x1 >= dis_width:
         x1=0
@@ -53,13 +55,14 @@ x_ra=[]
 y_ra=[]
 high=[]
 width=[]
+@profiler
 def pripat(dis_width):
     for i in range(10):
         x_ra.append(random.randrange(10, dis_width-10, 10))
         y_ra.append(random.randrange(10, dis_width-10, 10))
         high.append(random.randrange(10, 60, 10))
         width.append(random.randrange(50, 60, 10))
-
+@profiler
 def uvelich(dlin_zm,pribav,x,y):
     if pribav==1 and (x!=dlin_zm[len(dlin_zm)-1][0] or y!=dlin_zm[len(dlin_zm)-1][1]):
         pygame.draw.circle(dis,black,(x,y),10)
@@ -96,7 +99,7 @@ while vopr==4:
         vopr=2
     elif a4.collidepoint(x,y):
         vopr=3
-
+@profiler
 def bespripat():
     x=0
     pribav=0
@@ -194,8 +197,8 @@ def bespripat():
             y_rand=random.randrange(10, dis_width-20, 10)
             for i in b:    
                 if i.collidepoint(x_rand,y_rand):
-                    x_rand=random.randrange(10, dis_width-20, 10)
-                    y_rand=random.randrange(10, dis_width-20, 10)
+                    x_rand=random.randrange(20, dis_width-20, 10)
+                    y_rand=random.randrange(20, dis_width-20, 10)
             pribav=1
             x,y=[x1,y1]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
@@ -222,6 +225,7 @@ def bespripat():
     clock.tick(2)
     pygame.quit()
 bespripat()
+profiler.print_stats()
 quit()
 
 
