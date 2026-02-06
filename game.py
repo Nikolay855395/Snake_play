@@ -148,7 +148,11 @@ def bespripat():
                         game_close = False
                     if event.key == pygame.K_p:
                         bespripat()
+        n=1
         for event in pygame.event.get():
+            if n==0:
+                break
+            n=0
             if event.type == pygame.QUIT:
                 game_over = True
             if event.type == pygame.KEYDOWN:
