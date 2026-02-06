@@ -28,11 +28,11 @@ def ris_zm(snake_block,dlin_zm,x1,y1):
         if i!=0:
             dlin_zm[i]=dlin_zm[i-1]
             x11,y11=dlin_zm[i]
-            pygame.draw.circle(dis, black, [x11, y11, snake_block, snake_block])  
+            pygame.draw.circle(dis, black, (x11, y11), snake_block-3)  
     
     dlin_zm[0]=[x1,y1]
     x11,y11=dlin_zm[0]
-    pygame.draw.circle(dis, black, [x11, y11, snake_block, snake_block])
+    pygame.draw.circle(dis, black, (x11, y11), snake_block-3)
 
 def pola(x1,y1):
     if x1 >= dis_width or x1 <= 0 or y1 >= dis_width or y1 <= 0:
@@ -188,7 +188,7 @@ def bespripat():
         else:
             x1,y1=bespola(x1,y1) 
 
-        pygame.draw.rect(dis, red, [x_rand, y_rand, snake_block, snake_block])
+        pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
 
         if x1 == x_rand and y1 == y_rand:
             x_rand=random.randrange(10, dis_width-10, 10)
