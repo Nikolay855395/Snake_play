@@ -150,11 +150,11 @@ def bespripat():
                         bespripat()
         n=1
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_over = True
             if n==0:
                 break
             n=0
-            if event.type == pygame.QUIT:
-                game_over = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT and x1_change != snake_block:
                     x1_change = -snake_block
