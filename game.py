@@ -112,27 +112,31 @@ def bespripat():
     dlin_zm=[[]]
     game_close=False
     dis.fill(blue)
+    #рисует припятствия
     if vopr ==1 or vopr == 3:
         pripat(dis_width)
         for i in range(10):
             b.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
     pygame.display.update()
+    #Первая точка еды
     while x_rand==0.5:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x_rand,y_rand=pygame.mouse.get_pos()
-    x_rand=x_rand+(10-int(str(round(x_rand))[-1:]))
-    y_rand=y_rand+(10-int(str(round(y_rand))[-1:]))
+    x_rand=round(x_rand)+(10-int(str(round(x_rand))[-1:]))
+    y_rand=round(y_rand)+(10-int(str(round(y_rand))[-1:]))
     pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
     pygame.display.update()
+    #Первый круг змейки
     while x1==0.5:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x1,y1=pygame.mouse.get_pos()
-    x1=x1+(10-int(str(round(x1))[-1:]))
-    y1=y1+(10-int(str(round(y1))[-1:]))
-    pygame.draw.rect(dis, black, [x1, y1, snake_block, snake_block])  
+    x1=round(x1)+(10-int(str(round(x1))[-1:]))
+    y1=round(y1)+(10-int(str(round(y1))[-1:]))
+    pygame.draw.circle(dis, black, (x1, y1), snake_block)  
     pygame.display.update()
+
     while not game_over:
         while game_close==True:
             masag('Вы проиграли: нажмите P чтобы продолжить или C чтобы сброить',red,dis_width/10,dis_width/3)
@@ -163,16 +167,17 @@ def bespripat():
         x1 += x1_change
         y1 += y1_change 
         dis.fill(blue)
-
+        #Рисует припятствия
         if vopr ==1 or vopr == 3:
             for i in range(10):
                 pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]])
             for i in b:    
                 if i.collidepoint(x1,y1):
                     game_close=True
-
-        if vopr==2 :
+        #Проверка на поля
+        if vopr==2:
             game_close=pola(x1,y1)
+        #Это нужно,чтобы были препятствия
         elif vopr==3 and game_close!=True:
             game_close=pola(x1,y1)
         else:
@@ -181,12 +186,12 @@ def bespripat():
         pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
 
         if x1 == x_rand and y1 == y_rand:
-            x_rand=random.randrange(10, dis_width-10, 10)
-            y_rand=random.randrange(10, dis_width-10, 10)
+            x_rand=random.randrange(10, dis_width-20, 10)
+            y_rand=random.randrange(10, dis_width-20, 10)
             for i in b:    
                 if i.collidepoint(x_rand,y_rand):
-                    x_rand=random.randrange(10, dis_width-10, 10)
-                    y_rand=random.randrange(10, dis_width-10, 10)
+                    x_rand=random.randrange(10, dis_width-20, 10)
+                    y_rand=random.randrange(10, dis_width-20, 10)
             pribav=1
             x,y=[x1,y1]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
@@ -208,7 +213,7 @@ def bespripat():
         clock.tick(snake_speed)
 
     dis.fill(blue)
-    masag(f'ваш счёт{len(dlin_zm)}',red,dis_width/3,dis_width/3)
+    masag(f'ваш счёт {len(dlin_zm)}',red,dis_width/3,dis_width/3)
     pygame.display.update()
     clock.tick(2)
     pygame.quit()
