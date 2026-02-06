@@ -60,21 +60,21 @@ def pripat(dis_width):
         high.append(random.randrange(10, 60, 10))
         width.append(random.randrange(50, 60, 10))
 
-def uvelich(dlin_zm,pribavlenie,pribav,x,y,x_ism,y_ism):
+def uvelich(dlin_zm,pribav,x,y,x_ism,y_ism):
     if y_ism==0:
-        if pribavlenie==1 and x!=dlin_zm[len(dlin_zm)-1][0]:
-            pygame.draw.rect(dis,black,[x,y-5,10,20])
-        else:
-            pribavlenie=0
+        if pribav==1 and x!=dlin_zm[len(dlin_zm)-1][0]:
+            pygame.draw.circle(dis,black,(x,y),10)
+        elif pribav!=2:
+            pribav=0
     elif x_ism==0:
-        if pribavlenie==1 and y!=dlin_zm[len(dlin_zm)-1][1]:
-            pygame.draw.rect(dis,black,[x-5,y-10,20,10])
-        else:
-            pribavlenie=0
-    if pribavlenie==0 and pribav==1:
+        if pribav==1 and y!=dlin_zm[len(dlin_zm)-1][1]:
+            pygame.draw.circle(dis,black,(x,y),10)
+        elif pribav!=2:
+            pribav=0
+    if pribav==0:
         dlin_zm.append([])
-        pribav=0
-    return pribavlenie,pribav
+        pribav=2
+    return pribav
 
 vopr=4
 dis.fill(blue)
@@ -108,7 +108,6 @@ while vopr==4:
 
 def bespripat():
     x=0
-    pribavlenie=2
     pribav=0
     b=[]
     x_rand=0.5
@@ -197,7 +196,6 @@ def bespripat():
                 if i.collidepoint(x_rand,y_rand):
                     x_rand=random.randrange(10, dis_width-10, 10)
                     y_rand=random.randrange(10, dis_width-10, 10)
-            pribavlenie=1
             pribav=1
             x,y,x_ism,y_ism=[x1,y1,x1_change,y1_change]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2:
@@ -205,7 +203,7 @@ def bespripat():
         
         ris_zm(snake_block,dlin_zm,x1,y1)
         if x!=0:
-            pribavlenie,pribav=uvelich(dlin_zm,pribavlenie,pribav,x,y,x_ism,y_ism)
+            pribav=uvelich(dlin_zm,pribav,x,y,x_ism,y_ism)
         n=0
         if len(dlin_zm)>1:
             for i in dlin_zm:
