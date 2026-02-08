@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import math
 from line_profiler import LineProfiler
 profiler = LineProfiler()
 x_rand=0
@@ -57,7 +58,6 @@ x_ra=[]
 y_ra=[]
 high=[]
 width=[]
-
 def pripat(dis_width):
     for i in range(10):
         x_ra.append(random.randrange(10, dis_width-10, 10))
@@ -76,6 +76,21 @@ def uvelich(dlin_zm,pribav,x,y):
         dlin_zm.append([])
         pribav=2
     return pribav
+
+def na_prepat(b,dis_width):
+    n=0
+    x=random.randrange(20, dis_width-20, 10)
+    y=random.randrange(20, dis_width-20, 10)
+    while n==0:
+        for i in b:    
+            if i.collidepoint(x,y):
+                x=random.randrange(20, dis_width-20, 10)
+                y=random.randrange(20, dis_width-20, 10)
+                n=2
+                break
+        if n!=2:
+            n=1
+    return x,y
 
 #Все функции раньше
 vopr=4
@@ -112,7 +127,7 @@ def bespripat():
     x1_change = 0
     y1_change = 0
     clock = pygame.time.Clock()
-    rand_vr=random.randrange(10, 20, 10)
+    rand_vr=random.randrange(10, 40, 10)
     snake_speed=10
     dlin_zm=[[]]
     game_close=False
@@ -123,6 +138,7 @@ def bespripat():
         for i in range(10):
             b.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
     pygame.display.update()
+    x_rand_magn,y_rand_magn=na_prepat(b,dis_width)
     #Первая точка еды
     while x_rand==0.5:
         for event in pygame.event.get():
@@ -177,13 +193,15 @@ def bespripat():
         y1 += y1_change 
         dis.fill(blue)
         
+        #Временной промежуток магнита
         time_1=time.time()
-        if rand_vr <= time_1-time_0 <= rand_vr+10 and not(magn.collidepoint(x1,y1)):
-            magn=pygame.draw.circle(dis, green, (x_rand, y_rand), snake_block+5)
+        if rand_vr <= time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed) and not(magn.collidepoint(x1,y1)):
+            magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
             time_vr=time.time()
         elif magn.collidepoint(x1,y1):
             time_0=time_vr
             time_1=time.time()
+            x_rand_magn,y_rand_magn=na_prepat(b,dis_width)
         
         #Рисует припятствия
         if vopr ==1 or vopr == 3:
@@ -203,13 +221,8 @@ def bespripat():
 
         #Рисует еду, съел еду
         pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
-        if x1 == x_rand and y1 == y_rand:
-            x_rand=random.randrange(10, dis_width-20, 10)
-            y_rand=random.randrange(10, dis_width-20, 10)
-            for i in b:    
-                if i.collidepoint(x_rand,y_rand):
-                    x_rand=random.randrange(20, dis_width-20, 10)
-                    y_rand=random.randrange(20, dis_width-20, 10)
+        if x1 == x_rand and y1 == y_rand:    
+            x_rand, y_rand=na_prepat(b,dis_width)
             pribav=1
             x,y=[x1,y1]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
