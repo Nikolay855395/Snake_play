@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 from line_profiler import LineProfiler
 profiler = LineProfiler()
 x_rand=0
@@ -12,6 +13,7 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 blue=(70,50,255)
 purple=(120,50,255)
+green=(100,255,150)
 
 
 dis_width = 780
@@ -20,11 +22,11 @@ pygame.display.set_caption('Змейка от Skillbox')
 
 
 font_style = pygame.font.SysFont(None, 30)
-@profiler
+
 def masag(msg,color,x1,y1): 
    mesg = font_style.render(msg, True, color)
    dis.blit(mesg, [x1, y1])
-@profiler
+
 def ris_zm(snake_block,dlin_zm,x1,y1):
     for i in range(len(dlin_zm)-1,0,-1):
         if i!=0:
@@ -35,11 +37,11 @@ def ris_zm(snake_block,dlin_zm,x1,y1):
     dlin_zm[0]=[x1,y1]
     x11,y11=dlin_zm[0]
     pygame.draw.circle(dis, black, (x11, y11), snake_block-3)
-@profiler
+
 def pola(x1,y1):
     if x1 >= dis_width or x1 <= 0 or y1 >= dis_width or y1 <= 0:
             return True 
-@profiler
+
 def bespola(x1,y1):
     if x1 >= dis_width:
         x1=0
@@ -55,14 +57,14 @@ x_ra=[]
 y_ra=[]
 high=[]
 width=[]
-@profiler
+
 def pripat(dis_width):
     for i in range(10):
         x_ra.append(random.randrange(10, dis_width-10, 10))
         y_ra.append(random.randrange(10, dis_width-10, 10))
         high.append(random.randrange(10, 60, 10))
         width.append(random.randrange(50, 60, 10))
-@profiler
+
 def uvelich(dlin_zm,pribav,x,y):
     if pribav==1 and (x!=dlin_zm[len(dlin_zm)-1][0] or y!=dlin_zm[len(dlin_zm)-1][1]):
         pygame.draw.circle(dis,black,(x,y),10)
@@ -75,6 +77,7 @@ def uvelich(dlin_zm,pribav,x,y):
         pribav=2
     return pribav
 
+#Все функции раньше
 vopr=4
 dis.fill(blue)
 x,y=[0,0]
@@ -91,16 +94,13 @@ while vopr==4:
     for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x,y=pygame.mouse.get_pos()
-    if a1.collidepoint(x,y):
-        vopr=0
-    elif a2.collidepoint(x,y):
-        vopr=1
-    elif a3.collidepoint(x,y):
-        vopr=2
-    elif a4.collidepoint(x,y):
-        vopr=3
-@profiler
+    nashat=[a1,a2,a3,a4]
+    for i,nom in enumerate(nashat):
+        if nom.collidepoint(x,y):
+            vopr=i
+    
 def bespripat():
+    time_0=time.time()
     x=0
     pribav=0
     b=[]
@@ -108,9 +108,11 @@ def bespripat():
     x1=0.5
     game_over = False
     snake_block=10 
+    magn=pygame.draw.circle(dis, green, (200, 200), snake_block+5)
     x1_change = 0
     y1_change = 0
     clock = pygame.time.Clock()
+    rand_vr=random.randrange(10, 20, 10)
     snake_speed=10
     dlin_zm=[[]]
     game_close=False
@@ -174,6 +176,15 @@ def bespripat():
         x1 += x1_change
         y1 += y1_change 
         dis.fill(blue)
+        
+        time_1=time.time()
+        if rand_vr <= time_1-time_0 <= rand_vr+10 and not(magn.collidepoint(x1,y1)):
+            magn=pygame.draw.circle(dis, green, (x_rand, y_rand), snake_block+5)
+            time_vr=time.time()
+        elif magn.collidepoint(x1,y1):
+            time_0=time_vr
+            time_1=time.time()
+        
         #Рисует припятствия
         if vopr ==1 or vopr == 3:
             for i in range(10):
@@ -190,8 +201,8 @@ def bespripat():
         else:
             x1,y1=bespola(x1,y1) 
 
+        #Рисует еду, съел еду
         pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
-
         if x1 == x_rand and y1 == y_rand:
             x_rand=random.randrange(10, dis_width-20, 10)
             y_rand=random.randrange(10, dis_width-20, 10)
@@ -203,7 +214,8 @@ def bespripat():
             x,y=[x1,y1]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
                 snake_speed+=5
-        
+
+        #Движение змейки, проверкаа на хвост
         ris_zm(snake_block,dlin_zm,x1,y1)
         if x!=0:
             pribav=uvelich(dlin_zm,pribav,x,y)
@@ -216,7 +228,6 @@ def bespripat():
                         game_close = True
         
         pygame.display.update()
-
         clock.tick(snake_speed)
 
     dis.fill(blue)
