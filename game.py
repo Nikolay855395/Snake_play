@@ -4,8 +4,7 @@ import time
 import math
 from line_profiler import LineProfiler
 profiler = LineProfiler()
-x_rand=0
-y_rand=0
+
  
 pygame.init()
  
@@ -23,7 +22,6 @@ pygame.display.set_caption('Змейка от Skillbox')
 
 
 font_style = pygame.font.SysFont(None, 30)
-
 def masag(msg,color,x1,y1): 
    mesg = font_style.render(msg, True, color)
    dis.blit(mesg, [x1, y1])
@@ -65,6 +63,12 @@ def pripat(dis_width):
         high.append(random.randrange(10, 60, 10))
         width.append(random.randrange(50, 60, 10))
 
+#Общая разметка поля
+obch_rasm=[]
+for x in range(0,780,10):
+    for y in range(0,780,10):
+        obch_rasm.append(pygame.draw.rect(dis,red,(x,y,10,10)))
+
 def uvelich(dlin_zm,pribav,x,y):
     if pribav==1 and (x!=dlin_zm[len(dlin_zm)-1][0] or y!=dlin_zm[len(dlin_zm)-1][1]):
         pygame.draw.circle(dis,black,(x,y),10)
@@ -92,6 +96,19 @@ def na_prepat(b,dis_width):
             n=1
     return x,y
 
+def dvish_ed(x1,y1,x_rand,y_rand):
+    nacon=[[x1,y1],[x_rand,y_rand]]
+    cor_toch=[]
+    promesh=[]
+    for i in obch_rasm:
+        if i.clipline(nacon[0],nacon[1]):
+            for j,c in enumerate(i):
+                if j in (0,1):
+                    promesh.append(c)
+            cor_toch.append(promesh)
+            promesh=[]
+    return cor_toch
+
 #Все функции раньше
 vopr=4
 dis.fill(blue)
@@ -116,9 +133,12 @@ while vopr==4:
     
 def bespripat():
     time_0=time.time()
+    nacon=[]
+    cor_toch=[]
+    nachal_dvish=0
     x=0
     pribav=0
-    b=[]
+    kor_prip=[]
     x_rand=0.5
     x1=0.5
     game_over = False
@@ -136,9 +156,9 @@ def bespripat():
     if vopr ==1 or vopr == 3:
         pripat(dis_width)
         for i in range(10):
-            b.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
+            kor_prip.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
     pygame.display.update()
-    x_rand_magn,y_rand_magn=na_prepat(b,dis_width)
+    x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
     #Первая точка еды
     while x_rand==0.5:
         for event in pygame.event.get():
@@ -197,17 +217,29 @@ def bespripat():
         time_1=time.time()
         if rand_vr <= time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed) and not(magn.collidepoint(x1,y1)):
             magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
-            time_vr=time.time()
         elif magn.collidepoint(x1,y1):
-            time_0=time_vr
-            time_1=time.time()
-            x_rand_magn,y_rand_magn=na_prepat(b,dis_width)
-        
+            time_0=time.time()
+            x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
+            nachal_dvish=1
+        if nachal_dvish==1:
+            chet=0
+            cor_toch=dvish_ed(x1,y1,x_rand,y_rand)
+            if chet<len(cor_toch):
+                chet+=1
+            x_rand,y_rand=cor_toch[chet]
+            if x1 == x_rand and y1 == y_rand:
+                nachal_dvish=0
+            # dis.fill(black)
+            # pygame.draw.circle(dis,red,(x3,y3),10)
+            # pygame.time.Clock().tick(5)
+        else:
+            nachal_dvish=0
+
         #Рисует припятствия
         if vopr ==1 or vopr == 3:
             for i in range(10):
                 pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]])
-            for i in b:    
+            for i in kor_prip:    
                 if i.collidepoint(x1,y1):
                     game_close=True
         #Проверка на поля
@@ -222,8 +254,9 @@ def bespripat():
         #Рисует еду, съел еду
         pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
         if x1 == x_rand and y1 == y_rand:    
-            x_rand, y_rand=na_prepat(b,dis_width)
+            x_rand, y_rand=na_prepat(kor_prip,dis_width)
             pribav=1
+            nachal_dvish=0
             x,y=[x1,y1]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
                 snake_speed+=5
