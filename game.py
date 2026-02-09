@@ -104,7 +104,7 @@ def sov_so_zm(dlin_zm,x,y):
         for i in dlin_zm: 
             x2=i[0]
             y2=i[1]   
-            if abs(x2-x)<20 or abs(y2-y)<20:
+            if abs(x2-x)>20 or abs(y2-y)>20:
                 x=random.randrange(20, dis_width-20, 10)
                 y=random.randrange(20, dis_width-20, 10)
                 n=2
@@ -152,7 +152,6 @@ while vopr==4:
     
 def bespripat():
     time_0=time.time()
-    nacon=[]
     cor_toch=[]
     nachal_dvish=0
     x=0
@@ -241,6 +240,7 @@ def bespripat():
             x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
             x_rand_magn, y_rand_magn=sov_so_zm(dlin_zm,x_rand_magn, y_rand_magn)
             nachal_dvish=1
+            rand_vr=random.randrange(10, 40, 10)
         if nachal_dvish==1:
             chet=0
             cor_toch=dvish_ed(x1,y1,x_rand,y_rand)
@@ -252,6 +252,8 @@ def bespripat():
                 chet+=1
             if len(cor_toch)!=0:
                 x_rand,y_rand=cor_toch[chet]
+            else:
+                nachal_dvish=0
             if x1 == x_rand and y1 == y_rand:
                 nachal_dvish=0
         else:
