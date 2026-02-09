@@ -94,6 +94,25 @@ def na_prepat(b,dis_width):
                 break
         if n!=2:
             n=1
+        else:
+            n=0
+    return x,y
+
+def sov_so_zm(dlin_zm,x,y):
+    n=0
+    while n==0:
+        for i in dlin_zm: 
+            x2=i[0]
+            y2=i[1]   
+            if abs(x2-x)<20 or abs(y2-y)<20:
+                x=random.randrange(20, dis_width-20, 10)
+                y=random.randrange(20, dis_width-20, 10)
+                n=2
+                break
+        if n!=2:
+            n=1
+        else:
+            n=0
     return x,y
 
 def dvish_ed(x1,y1,x_rand,y_rand):
@@ -220,6 +239,7 @@ def bespripat():
         elif magn.collidepoint(x1,y1):
             time_0=time.time()
             x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
+            x_rand_magn, y_rand_magn=sov_so_zm(dlin_zm,x_rand_magn, y_rand_magn)
             nachal_dvish=1
         if nachal_dvish==1:
             chet=0
@@ -257,6 +277,7 @@ def bespripat():
         pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
         if x1 == x_rand and y1 == y_rand:    
             x_rand, y_rand=na_prepat(kor_prip,dis_width)
+            x_rand, y_rand=sov_so_zm(dlin_zm,x_rand, y_rand)
             pribav=1
             nachal_dvish=0
             x,y=[x1,y1]
