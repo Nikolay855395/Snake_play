@@ -97,7 +97,7 @@ def na_prepat(b,dis_width):
     return x,y
 
 def dvish_ed(x1,y1,x_rand,y_rand):
-    nacon=[[x1,y1],[x_rand,y_rand]]
+    nacon=[[x_rand,y_rand],[x1,y1]]
     cor_toch=[]
     promesh=[]
     for i in obch_rasm:
@@ -224,14 +224,16 @@ def bespripat():
         if nachal_dvish==1:
             chet=0
             cor_toch=dvish_ed(x1,y1,x_rand,y_rand)
-            if chet<len(cor_toch):
+            if x_rand>x1:
+                cor_toch=sorted(cor_toch,reverse=True)
+            elif x_rand==x1 and y_rand>y1:
+                cor_toch=sorted(cor_toch,reverse=True)
+            if chet<len(cor_toch)-1:
                 chet+=1
-            x_rand,y_rand=cor_toch[chet]
+            if len(cor_toch)!=0:
+                x_rand,y_rand=cor_toch[chet]
             if x1 == x_rand and y1 == y_rand:
                 nachal_dvish=0
-            # dis.fill(black)
-            # pygame.draw.circle(dis,red,(x3,y3),10)
-            # pygame.time.Clock().tick(5)
         else:
             nachal_dvish=0
 
