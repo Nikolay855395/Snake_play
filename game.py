@@ -96,6 +96,7 @@ def na_prepat(b,dis_width):
             n=1
         else:
             n=0
+    print(0)
     return x,y
 
 def sov_so_zm(dlin_zm,x,y):
