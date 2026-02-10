@@ -118,7 +118,7 @@ def sov_so_zm(dlin_zm,x,y):
 
 def dvish_ed(x1,y1,x_rand,y_rand):
     nacon=[[x_rand,y_rand],[x1,y1]]
-    lin=pygame.draw.line(dis,blue,nacon[0],nacon[1],1)
+    lin=pygame.draw.line(dis,red,nacon[0],nacon[1],1)
     okr=pygame.draw.circle(dis,blue,nacon[0],15,1)
     f=okr.clipline(nacon[0],nacon[1])
     vrem=[]
@@ -135,28 +135,30 @@ def dvish_ed(x1,y1,x_rand,y_rand):
     return vrem
 
 #Все функции раньше
-vopr=4
 dis.fill(blue)
-x,y=[0,0]
-while vopr==4:
-    a1=pygame.draw.rect(dis,purple,[300,156,400,100])
-    masag('без полей и без припятствий',red,300,156)
-    a2=pygame.draw.rect(dis,purple,[300,312,400,100])
-    masag('без полей и с припятствий',red,300,312)
-    a3=pygame.draw.rect(dis,purple,[300,468,400,100])
-    masag('с полями и без припятствий',red,300,468)
-    a4=pygame.draw.rect(dis,purple,[300,624,400,100])
-    masag('с полями и с припятствий',red,300,624)
-    pygame.display.update()
-    for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x,y=pygame.mouse.get_pos()
-    nashat=[a1,a2,a3,a4]
-    for i,nom in enumerate(nashat):
-        if nom.collidepoint(x,y):
-            vopr=i
-    
+def vibor():
+    vopr=4
+    x,y=[0,0]
+    while vopr==4:
+        a1=pygame.draw.rect(dis,purple,[300,156,400,100])
+        masag('без полей и без припятствий',red,300,156)
+        a2=pygame.draw.rect(dis,purple,[300,312,400,100])
+        masag('без полей и с припятствий',red,300,312)
+        a3=pygame.draw.rect(dis,purple,[300,468,400,100])
+        masag('с полями и без припятствий',red,300,468)
+        a4=pygame.draw.rect(dis,purple,[300,624,400,100])
+        masag('с полями и с припятствий',red,300,624)
+        pygame.display.update()
+        for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    x,y=pygame.mouse.get_pos()
+        nashat=[a1,a2,a3,a4]
+        for i,nom in enumerate(nashat):
+            if nom.collidepoint(x,y):
+                vopr=i
+    return vopr
 def bespripat():
+    vopr=vibor()
     time_0=time.time()
     nachal_dvish=0
     x=0
@@ -209,6 +211,8 @@ def bespripat():
                         game_over = True
                         game_close = False
                     if event.key == pygame.K_p:
+                        dis.fill(blue)
+                        vopr=vibor()
                         bespripat()
         n=1
         for event in pygame.event.get():
