@@ -83,7 +83,6 @@ def uvelich(dlin_zm,pribav,x,y):
 
 def na_prepat(b,dis_width):
     n=0
-    print(0)
     x=random.randrange(20, dis_width-20, 10)
     y=random.randrange(20, dis_width-20, 10)
     while n==0:
@@ -246,6 +245,7 @@ def bespripat():
             magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
         try:
             if magn.collidepoint(x1,y1):
+                magn=0
                 time_0=time.time()
                 nachal_dvish=1
                 rand_vr=random.randrange(10, 40, 10)
@@ -253,6 +253,8 @@ def bespripat():
                 time_0=time.time()
         except UnboundLocalError:
             nachal_dvish=0
+        except AttributeError: 
+            magn=0
         if nachal_dvish==1:
             x_rand,y_rand=dvish_ed(x1,y1,x_rand,y_rand)
 
