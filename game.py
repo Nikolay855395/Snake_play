@@ -103,13 +103,14 @@ def sov_so_zm(dlin_zm,x,y):
     n=0
     while n==0:
         for i in dlin_zm: 
-            x2=i[0]
-            y2=i[1]   
-            if abs(x2-x)<20 or abs(y2-y)<20:
-                x=random.randrange(20, dis_width-20, 10)
-                y=random.randrange(20, dis_width-20, 10)
-                n=2
-                break
+            if i != []:
+                x2=i[0]
+                y2=i[1]   
+                if abs(x2-x)<200 and abs(y2-y)<200:
+                    x=random.randrange(20, dis_width-20, 10)
+                    y=random.randrange(20, dis_width-20, 10)
+                    n=2
+                    break
         if n!=2:
             n=1
         else:
@@ -118,16 +119,21 @@ def sov_so_zm(dlin_zm,x,y):
 
 def dvish_ed(x1,y1,x_rand,y_rand):
     nacon=[[x_rand,y_rand],[x1,y1]]
-    cor_toch=[]
-    promesh=[]
+    lin=pygame.draw.line(dis,blue,nacon[0],nacon[1],1)
+    okr=pygame.draw.circle(dis,blue,nacon[0],15,1)
+    f=okr.clipline(nacon[0],nacon[1])
+    vrem=[]
+    for ch1,kor1 in enumerate(f):
+        if ch1==1:
+            for w in kor1:
+                vrem.append(w)
     for i in obch_rasm:
-        if i.clipline(nacon[0],nacon[1]):
-            for j,c in enumerate(i):
-                if j in (0,1):
-                    promesh.append(c)
-            cor_toch.append(promesh)
-            promesh=[]
-    return cor_toch
+        if i.collidepoint(vrem):
+            vrem=[]
+            for ch2,kor2 in enumerate(i):
+                if ch2 in (0,1):
+                    vrem.append(kor2)
+    return vrem
 
 #Все функции раньше
 vopr=4
@@ -153,8 +159,6 @@ while vopr==4:
     
 def bespripat():
     time_0=time.time()
-    nacon=[]
-    cor_toch=[]
     nachal_dvish=0
     x=0
     pribav=0
@@ -163,7 +167,7 @@ def bespripat():
     x1=0.5
     game_over = False
     snake_block=10 
-    magn=pygame.draw.circle(dis, green, (200, 200), snake_block+5)
+    # magn=pygame.draw.circle(dis, green, (200, 200), snake_block+5)
     x1_change = 0
     y1_change = 0
     clock = pygame.time.Clock()
@@ -235,28 +239,25 @@ def bespripat():
         
         #Временной промежуток магнита
         time_1=time.time()
-        if rand_vr <= time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed) and not(magn.collidepoint(x1,y1)):
-            magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
-        elif magn.collidepoint(x1,y1):
-            time_0=time.time()
+        if rand_vr-3 <= time_1-time_0 <= rand_vr:
             x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
             x_rand_magn, y_rand_magn=sov_so_zm(dlin_zm,x_rand_magn, y_rand_magn)
-            nachal_dvish=1
-        if nachal_dvish==1:
-            chet=0
-            cor_toch=dvish_ed(x1,y1,x_rand,y_rand)
-            if x_rand>x1:
-                cor_toch=sorted(cor_toch,reverse=True)
-            elif x_rand==x1 and y_rand>y1:
-                cor_toch=sorted(cor_toch,reverse=True)
-            if chet<len(cor_toch)-1:
-                chet+=1
-            if len(cor_toch)!=0:
-                x_rand,y_rand=cor_toch[chet]
-            if x1 == x_rand and y1 == y_rand:
-                nachal_dvish=0
-        else:
+        if rand_vr <= time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed):
+            magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
+        try:
+            if magn.collidepoint(x1,y1):
+                magn=0
+                time_0=time.time()
+                nachal_dvish=1
+                rand_vr=random.randrange(10, 40, 10)
+            elif not(time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed)):
+                time_0=time.time()
+        except UnboundLocalError:
             nachal_dvish=0
+        except AttributeError: 
+            magn=0
+        if nachal_dvish==1:
+            x_rand,y_rand=dvish_ed(x1,y1,x_rand,y_rand)
 
         #Рисует припятствия
         if vopr ==1 or vopr == 3:
