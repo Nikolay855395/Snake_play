@@ -96,7 +96,6 @@ def na_prepat(b,dis_width):
             n=1
         else:
             n=0
-    print(0)
     return x,y
 
 def sov_so_zm(dlin_zm,x,y):
@@ -167,7 +166,6 @@ def bespripat():
     x1=0.5
     game_over = False
     snake_block=10 
-    # magn=pygame.draw.circle(dis, green, (200, 200), snake_block+5)
     x1_change = 0
     y1_change = 0
     clock = pygame.time.Clock()
@@ -182,7 +180,7 @@ def bespripat():
         for i in range(10):
             kor_prip.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
     pygame.display.update()
-    x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
+    # x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
     #Первая точка еды
     while x_rand==0.5:
         for event in pygame.event.get():
