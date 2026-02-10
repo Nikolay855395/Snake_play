@@ -180,7 +180,6 @@ def bespripat():
         for i in range(10):
             kor_prip.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
     pygame.display.update()
-    # x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
     #Первая точка еды
     while x_rand==0.5:
         for event in pygame.event.get():
@@ -240,16 +239,15 @@ def bespripat():
         if rand_vr-3 <= time_1-time_0 <= rand_vr:
             x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
             x_rand_magn, y_rand_magn=sov_so_zm(dlin_zm,x_rand_magn, y_rand_magn)
-        if rand_vr <= time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed):
+        if rand_vr <= time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed) and nachal_dvish==0:
             magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
         try:
             if magn.collidepoint(x1,y1):
                 magn=0
-                time_0=time.time()
                 nachal_dvish=1
-                rand_vr=random.randrange(10, 40, 10)
             elif not(time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed)):
                 time_0=time.time()
+                magn=0
         except UnboundLocalError:
             nachal_dvish=0
         except AttributeError: 
@@ -279,7 +277,10 @@ def bespripat():
             x_rand, y_rand=na_prepat(kor_prip,dis_width)
             x_rand, y_rand=sov_so_zm(dlin_zm,x_rand, y_rand)
             pribav=1
-            nachal_dvish=0
+            if nachal_dvish==1:
+                time_0=time.time()
+                rand_vr=random.randrange(10, 40, 10)
+                nachal_dvish=0
             x,y=[x1,y1]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
                 snake_speed+=5
