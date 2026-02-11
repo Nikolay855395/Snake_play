@@ -115,23 +115,14 @@ def sov_so_zm(dlin_zm,x,y):
             n=0
     return x,y
 
-def dvish_ed(x1,y1,x_rand,y_rand):
-    nacon=[[x_rand,y_rand],[x1,y1]]
-    lin=pygame.draw.line(dis,blue,nacon[0],nacon[1],1)
-    okr=pygame.draw.circle(dis,blue,nacon[0],15,1)
-    f=okr.clipline(nacon[0],nacon[1])
-    vrem=[]
-    for ch1,kor1 in enumerate(f):
-        if ch1==1:
-            for w in kor1:
-                vrem.append(w)
-    for i in obch_rasm:
-        if i.collidepoint(vrem):
-            vrem=[]
-            for ch2,kor2 in enumerate(i):
-                if ch2 in (0,1):
-                    vrem.append(kor2)
-    return vrem
+def dvish_ed(x1,y1,x_rand,y_rand,snake_block):
+    dx=x1-x_rand
+    dy=y1-y_rand
+    G=(dx**2 + dy**2)**0.5
+    x_rand+=((dx)/G)*2
+    y_rand+=((dy)/G)*2
+    circle=pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
+    return x_rand,y_rand,circle
 
 #Все функции раньше
 dis.fill(blue)
@@ -178,7 +169,7 @@ def bespripat():
     x1_change = 0
     y1_change = 0
     clock = pygame.time.Clock()
-    rand_vr_m=random.randrange(10, 40, 10)
+    rand_vr_m=random.randrange(10, 20, 10)
     rand_vr_p=random.randrange(10, 40, 10)
     snake_speed=10
     dlin_zm=[[]]
@@ -314,7 +305,7 @@ def bespripat():
         except AttributeError: 
             magn=0
         if nachal_dvish==1:
-            x_rand,y_rand=dvish_ed(x1,y1,x_rand,y_rand)
+            x_rand,y_rand,circle=dvish_ed(x1,y1,x_rand,y_rand,snake_block)
 
         #Рандомное время портала
         if rand_vr_p-3 <= time_1-time_0_p <= rand_vr_p:
@@ -356,8 +347,9 @@ def bespripat():
             x1,y1=bespola(x1,y1) 
 
         #Рисует еду, съел еду
-        pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
-        if x1 == x_rand and y1 == y_rand:    
+        if nachal_dvish == 0:
+            circle=pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
+        if (x1 == x_rand and y1 == y_rand and nachal_dvish==0) or (circle.collidepoint(x1,y1) and nachal_dvish==1):    
             x_rand, y_rand=na_prepat(kor_prip,dis_width)
             x_rand, y_rand=sov_so_zm(dlin_zm,x_rand, y_rand)
             pribav=1
