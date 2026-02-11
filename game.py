@@ -2,8 +2,16 @@ import pygame
 import random
 import time
 import math
-from line_profiler import LineProfiler
-profiler = LineProfiler()
+# запуск с аргументом командной строки, чтобы мне не устанавливать этот профайлер
+import sys
+profiler = None
+if len(sys.argv)>1 and sys.argv[1]=="profile":
+    from line_profiler import LineProfiler
+    profiler = LineProfiler()
+def profile(f):
+    if profiler is not None:
+        return profiler(f)
+    return f
 
  
 pygame.init()
@@ -25,10 +33,11 @@ pygame.display.set_caption('Змейка от Skillbox')
 
 
 font_style = pygame.font.SysFont(None, 30)
+@profile
 def masag(msg,color,x1,y1): 
    mesg = font_style.render(msg, True, color)
    dis.blit(mesg, [x1, y1])
-
+@profile
 def ris_zm(snake_block,dlin_zm,x1,y1):
     for i in range(len(dlin_zm)-1,0,-1):
         if i!=0:
@@ -39,11 +48,11 @@ def ris_zm(snake_block,dlin_zm,x1,y1):
     dlin_zm[0]=[x1,y1]
     x11,y11=dlin_zm[0]
     pygame.draw.circle(dis, black, (x11, y11), snake_block-3)
-
+@profile
 def pola(x1,y1):
     if x1 >= dis_width or x1 <= 0 or y1 >= dis_width or y1 <= 0:
             return True 
-
+@profile
 def bespola(x1,y1):
     if x1 >= dis_width:
         x1=0
@@ -55,19 +64,18 @@ def bespola(x1,y1):
         y1=dis_width
     return x1, y1
 
-def pripat(dis_width,x_ra,y_ra,high,width):
+x_ra=[]
+y_ra=[]
+high=[]
+width=[]
+@profile
+def pripat(dis_width):
     for i in range(10):
         x_ra.append(random.randrange(10, dis_width-10, 10))
         y_ra.append(random.randrange(10, dis_width-10, 10))
         high.append(random.randrange(10, 60, 10))
         width.append(random.randrange(50, 60, 10))
-
-#Общая разметка поля
-obch_rasm=[]
-for x in range(0,780,10):
-    for y in range(0,780,10):
-        obch_rasm.append(pygame.draw.rect(dis,red,(x,y,10,10)))
-
+@profile
 def uvelich(dlin_zm,pribav,x,y):
     if pribav==1 and (x!=dlin_zm[len(dlin_zm)-1][0] or y!=dlin_zm[len(dlin_zm)-1][1]):
         pygame.draw.circle(dis,black,(x,y),10)
@@ -382,9 +390,5 @@ def bespripat():
     clock.tick(2)
     pygame.quit()
 bespripat()
-profiler.print_stats()
+if profiler: profiler.print_stats()
 quit()
-
-
-
-
