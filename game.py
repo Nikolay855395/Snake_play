@@ -14,6 +14,7 @@ red = (255, 0, 0)
 blue=(70,50,255)
 purple=(120,50,255)
 green=(100,255,150)
+yellow = (255, 255, 0) 
 
 
 dis_width = 780
@@ -159,7 +160,9 @@ def vibor():
     return vopr
 def bespripat():
     vopr=vibor()
-    time_0=time.time()
+    time_0_m=time.time()
+    time_0_p=time.time()
+    dostup_portal=0
     nachal_dvish=0
     x=0
     pribav=0
@@ -171,7 +174,8 @@ def bespripat():
     x1_change = 0
     y1_change = 0
     clock = pygame.time.Clock()
-    rand_vr=random.randrange(10, 40, 10)
+    rand_vr_m=random.randrange(10, 40, 10)
+    rand_vr_p=random.randrange(10, 40, 10)
     snake_speed=10
     dlin_zm=[[]]
     game_close=False
@@ -222,7 +226,20 @@ def bespripat():
                 break
             n=0
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT and x1_change != snake_block:
+                if event.key == pygame.K_t:
+                    if dostup_portal!=0:
+                        dostup_portal-=1
+                        x1,y1=[-1,-1]
+                        dis.fill(black)
+                        pygame.display.update()
+                        while x1==-1 and y1==-1:
+                            for event in pygame.event.get():
+                                if event.type == pygame.MOUSEBUTTONDOWN:
+                                    x1,y1=pygame.mouse.get_pos()
+                                    x1=round(x1)+(10-int(str(round(x1))[-1:]))
+                                    y1=round(y1)+(10-int(str(round(y1))[-1:]))
+                        pygame.display.update()
+                elif event.key == pygame.K_LEFT and x1_change != snake_block:
                     x1_change = -snake_block
                     y1_change = 0
                 elif event.key == pygame.K_RIGHT and x1_change != -snake_block:
@@ -240,17 +257,17 @@ def bespripat():
         
         #Временной промежуток магнита
         time_1=time.time()
-        if rand_vr-3 <= time_1-time_0 <= rand_vr:
+        if rand_vr_m-3 <= time_1-time_0_m <= rand_vr_m:
             x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
             x_rand_magn, y_rand_magn=sov_so_zm(dlin_zm,x_rand_magn, y_rand_magn)
-        if rand_vr <= time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed) and nachal_dvish==0:
+        if rand_vr_m <= time_1-time_0_m <= rand_vr_m+15-math.sqrt(snake_speed) and nachal_dvish==0:
             magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
         try:
             if magn.collidepoint(x1,y1):
                 magn=0
                 nachal_dvish=1
-            elif not(time_1-time_0 <= rand_vr+15-math.sqrt(snake_speed)):
-                time_0=time.time()
+            elif not(time_1-time_0_m <= rand_vr_m+15-math.sqrt(snake_speed)):
+                time_0_m=time.time()
                 magn=0
         except UnboundLocalError:
             nachal_dvish=0
@@ -258,6 +275,30 @@ def bespripat():
             magn=0
         if nachal_dvish==1:
             x_rand,y_rand=dvish_ed(x1,y1,x_rand,y_rand)
+
+        #Рандомное время портала
+        # print(time_0_p)
+        if rand_vr_p-3 <= time_1-time_0_p <= rand_vr_p:
+            x_rand_port,y_rand_port=na_prepat(kor_prip,dis_width)
+            x_rand_port,y_rand_port=sov_so_zm(dlin_zm,x_rand_port,y_rand_port)
+        if rand_vr_p <= time_1-time_0_p <= rand_vr_p+15-math.sqrt(snake_speed):
+            portal=pygame.draw.circle(dis,black,(x_rand_port,y_rand_port),20)
+            pygame.draw.circle(dis,yellow,(x_rand_port-10,y_rand_port),5)
+            pygame.draw.circle(dis,yellow,(x_rand_port+10,y_rand_port),5)
+        try:
+            if portal.collidepoint(x1,y1):
+                portal=0
+                time_0_p=time.time()
+                rand_vr_p=random.randrange(10, 40, 10)
+                dostup_portal+=1
+            elif time_1-time_0_p > rand_vr_p+15-math.sqrt(snake_speed):
+                time_0_p=time.time()
+                rand_vr_p=random.randrange(10, 40, 10)
+                portal=0
+        except UnboundLocalError:
+            portal=0
+        except AttributeError: 
+            portal=0
 
         #Рисует припятствия
         if vopr ==1 or vopr == 3:
@@ -282,8 +323,8 @@ def bespripat():
             x_rand, y_rand=sov_so_zm(dlin_zm,x_rand, y_rand)
             pribav=1
             if nachal_dvish==1:
-                time_0=time.time()
-                rand_vr=random.randrange(10, 40, 10)
+                time_0_m=time.time()
+                rand_vr_m=random.randrange(10, 40, 10)
                 nachal_dvish=0
             x,y=[x1,y1]
             if ((len(dlin_zm)-1)%10==5 or (len(dlin_zm)-1)%10==0) and len(dlin_zm)>2 and snake_speed!=60:
