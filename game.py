@@ -15,7 +15,7 @@ blue=(70,50,255)
 purple=(120,50,255)
 green=(100,255,150)
 yellow = (255, 255, 0) 
-
+tusk_yellow=(100,100,0)
 
 dis_width = 780
 dis = pygame.display.set_mode((dis_width, dis_width))
@@ -234,7 +234,20 @@ def bespripat():
                         x1,y1=[-1,-1]
                         dis.fill(black)
                         pygame.display.update()
+                        tim_chet=0
                         while x1==-1 and y1==-1:
+                            if vopr ==1 or vopr == 3:
+                                if tim_chet<=600:
+                                    for i in range(10):
+                                        pygame.draw.rect(dis, yellow, [x_ra[i], y_ra[i], high[i], width[i]])
+                                    tim_chet+=1
+                                elif tim_chet<=1200:
+                                    for i in range(10):
+                                        pygame.draw.rect(dis, tusk_yellow, [x_ra[i], y_ra[i], high[i], width[i]])
+                                    tim_chet+=1
+                                else:
+                                    tim_chet=0
+                                pygame.display.update()
                             for event in pygame.event.get():
                                 if event.type == pygame.MOUSEBUTTONDOWN:
                                     x1,y1=pygame.mouse.get_pos()
@@ -244,9 +257,9 @@ def bespripat():
                                     x_rand_port_v,y_rand_port_v=x1,y1
                                     propusk=1
                     else:
-                         masag('У вас недостаточно энергии',red,300,312)
-                         pygame.display.update()
-                         time.sleep(4)
+                        masag('У вас недостаточно энергии',red,300,312)
+                        pygame.display.update()
+                        time.sleep(4)
                 elif event.key == pygame.K_LEFT and x1_change != snake_block:
                     x1_change = -snake_block
                     y1_change = 0
