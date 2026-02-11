@@ -119,7 +119,7 @@ def sov_so_zm(dlin_zm,x,y):
 
 def dvish_ed(x1,y1,x_rand,y_rand):
     nacon=[[x_rand,y_rand],[x1,y1]]
-    lin=pygame.draw.line(dis,red,nacon[0],nacon[1],1)
+    lin=pygame.draw.line(dis,blue,nacon[0],nacon[1],1)
     okr=pygame.draw.circle(dis,blue,nacon[0],15,1)
     f=okr.clipline(nacon[0],nacon[1])
     vrem=[]
@@ -162,8 +162,10 @@ def bespripat():
     vopr=vibor()
     time_0_m=time.time()
     time_0_p=time.time()
+    propusk=0
     dostup_portal=0
     nachal_dvish=0
+    portal_1=0
     x=0
     pribav=0
     kor_prip=[]
@@ -238,7 +240,13 @@ def bespripat():
                                     x1,y1=pygame.mouse.get_pos()
                                     x1=round(x1)+(10-int(str(round(x1))[-1:]))
                                     y1=round(y1)+(10-int(str(round(y1))[-1:]))
-                        pygame.display.update()
+                                    portal_1=1
+                                    x_rand_port_v,y_rand_port_v=x1,y1
+                                    propusk=1
+                    else:
+                         masag('У вас недостаточно энергии',red,300,312)
+                         pygame.display.update()
+                         time.sleep(4)
                 elif event.key == pygame.K_LEFT and x1_change != snake_block:
                     x1_change = -snake_block
                     y1_change = 0
@@ -251,9 +259,21 @@ def bespripat():
                 elif event.key == pygame.K_DOWN and y1_change != -snake_block:
                     y1_change = snake_block
                     x1_change = 0
-        x1 += x1_change
-        y1 += y1_change 
+        if propusk==0:
+            x1 += x1_change
+            y1 += y1_change 
+        else:
+            propusk=0
         dis.fill(blue)
+
+        #Красивый выход
+        if portal_1==1:
+            if [x_rand_port_v,y_rand_port_v] != dlin_zm[len(dlin_zm)-1]:
+                pygame.draw.circle(dis,black,(x_rand_port_v,y_rand_port_v),20)
+                pygame.draw.circle(dis,red,(x_rand_port_v-10,y_rand_port_v),5)
+                pygame.draw.circle(dis,red,(x_rand_port_v+10,y_rand_port_v),5)
+            else:
+                portal_1=0
         
         #Временной промежуток магнита
         time_1=time.time()
@@ -277,7 +297,6 @@ def bespripat():
             x_rand,y_rand=dvish_ed(x1,y1,x_rand,y_rand)
 
         #Рандомное время портала
-        # print(time_0_p)
         if rand_vr_p-3 <= time_1-time_0_p <= rand_vr_p:
             x_rand_port,y_rand_port=na_prepat(kor_prip,dis_width)
             x_rand_port,y_rand_port=sov_so_zm(dlin_zm,x_rand_port,y_rand_port)
