@@ -55,11 +55,7 @@ def bespola(x1,y1):
         y1=dis_width
     return x1, y1
 
-x_ra=[]
-y_ra=[]
-high=[]
-width=[]
-def pripat(dis_width):
+def pripat(dis_width,x_ra,y_ra,high,width):
     for i in range(10):
         x_ra.append(random.randrange(10, dis_width-10, 10))
         y_ra.append(random.randrange(10, dis_width-10, 10))
@@ -161,6 +157,10 @@ def vibor():
                 vopr=i
     return vopr
 def bespripat():
+    x_ra=[]
+    y_ra=[]
+    high=[]
+    width=[]
     vopr=vibor()
     time_0_m=time.time()
     time_0_p=time.time()
@@ -186,7 +186,7 @@ def bespripat():
     dis.fill(blue)
     #рисует припятствия
     if vopr ==1 or vopr == 3:
-        pripat(dis_width)
+        pripat(dis_width,x_ra,y_ra,high,width)
         for i in range(10):
             kor_prip.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
     pygame.display.update()
