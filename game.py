@@ -64,12 +64,8 @@ def bespola(x1,y1):
         y1=dis_width
     return x1, y1
 
-x_ra=[]
-y_ra=[]
-high=[]
-width=[]
 @profile
-def pripat(dis_width):
+def pripat(dis_width,x_ra,y_ra,high,width):
     for i in range(10):
         x_ra.append(random.randrange(10, dis_width-10, 10))
         y_ra.append(random.randrange(10, dis_width-10, 10))
@@ -154,13 +150,15 @@ def vibor():
         for i,nom in enumerate(nashat):
             if nom.collidepoint(x,y):
                 vopr=i
-    return vopr
+    borders = vopr&2
+    obstacles = vopr&1
+    return borders,obstacles
 def bespripat():
     x_ra=[]
     y_ra=[]
     high=[]
     width=[]
-    vopr=vibor()
+    borders,obstacles=vibor()
     time_0_m=time.time()
     time_0_p=time.time()
     propusk=0
@@ -184,7 +182,7 @@ def bespripat():
     game_close=False
     dis.fill(blue)
     #рисует припятствия
-    if vopr ==1 or vopr == 3:
+    if obstacles:
         pripat(dis_width,x_ra,y_ra,high,width)
         for i in range(10):
             kor_prip.append(pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]]))
@@ -219,7 +217,7 @@ def bespripat():
                         game_close = False
                     if event.key == pygame.K_p:
                         dis.fill(blue)
-                        vopr=vibor()
+                        borders,obstacles=vibor()
                         bespripat()
         n=1
         for event in pygame.event.get():
@@ -339,17 +337,17 @@ def bespripat():
             portal=0
 
         #Рисует припятствия
-        if vopr ==1 or vopr == 3:
+        if obstacles:
             for i in range(10):
                 pygame.draw.rect(dis, purple, [x_ra[i], y_ra[i], high[i], width[i]])
             for i in kor_prip:    
                 if i.collidepoint(x1,y1):
                     game_close=True
         #Проверка на поля
-        if vopr==2:
+        if borders:
             game_close=pola(x1,y1)
         #Это нужно,чтобы были препятствия
-        elif vopr==3 and game_close!=True:
+        elif obstacles and game_close!=True:
             game_close=pola(x1,y1)
         else:
             x1,y1=bespola(x1,y1) 
