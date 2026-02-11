@@ -16,6 +16,8 @@ purple=(120,50,255)
 green=(100,255,150)
 yellow = (255, 255, 0) 
 tusk_yellow=(100,100,0)
+dark_blue=(0,0,255)
+pink=(255,192,203)
 
 dis_width = 780
 dis = pygame.display.set_mode((dis_width, dis_width))
@@ -236,18 +238,23 @@ def bespripat():
                         pygame.display.update()
                         tim_chet=0
                         while x1==-1 and y1==-1:
-                            if vopr ==1 or vopr == 3:
-                                if tim_chet<=600:
-                                    for i in range(10):
-                                        pygame.draw.rect(dis, yellow, [x_ra[i], y_ra[i], high[i], width[i]])
-                                    tim_chet+=1
-                                elif tim_chet<=1200:
-                                    for i in range(10):
-                                        pygame.draw.rect(dis, tusk_yellow, [x_ra[i], y_ra[i], high[i], width[i]])
-                                    tim_chet+=1
-                                else:
-                                    tim_chet=0
-                                pygame.display.update()
+                            if tim_chet<=600:
+                                for i in range(len(x_ra)):
+                                    pygame.draw.rect(dis, yellow, [x_ra[i], y_ra[i], high[i], width[i]])
+                                pygame.draw.circle(dis, blue, (x_rand, y_rand), snake_block)
+                                pygame.draw.circle(dis, red, (390, 390), snake_block)
+                                pygame.draw.circle(dis, red, (390+x1_change*2, 390+y1_change*2), snake_block-5)
+                                tim_chet+=1
+                            elif tim_chet<=1200:
+                                for i in range(len(x_ra)):
+                                    pygame.draw.rect(dis, tusk_yellow, [x_ra[i], y_ra[i], high[i], width[i]])
+                                pygame.draw.circle(dis, dark_blue, (x_rand, y_rand), snake_block)
+                                pygame.draw.circle(dis, pink, (390, 390), snake_block)
+                                pygame.draw.circle(dis, pink, (390+x1_change*2, 390+y1_change*2), snake_block-5)
+                                tim_chet+=1
+                            else:
+                                tim_chet=0
+                            pygame.display.update()
                             for event in pygame.event.get():
                                 if event.type == pygame.MOUSEBUTTONDOWN:
                                     x1,y1=pygame.mouse.get_pos()
