@@ -62,12 +62,6 @@ def pripat(dis_width,x_ra,y_ra,high,width):
         high.append(random.randrange(10, 60, 10))
         width.append(random.randrange(50, 60, 10))
 
-#Общая разметка поля
-obch_rasm=[]
-for x in range(0,780,10):
-    for y in range(0,780,10):
-        obch_rasm.append(pygame.draw.rect(dis,red,(x,y,10,10)))
-
 def uvelich(dlin_zm,pribav,x,y):
     if pribav==1 and (x!=dlin_zm[len(dlin_zm)-1][0] or y!=dlin_zm[len(dlin_zm)-1][1]):
         pygame.draw.circle(dis,black,(x,y),10)
@@ -80,40 +74,37 @@ def uvelich(dlin_zm,pribav,x,y):
         pribav=2
     return pribav
 
-def na_prepat(b,dis_width):
+def na_prepat(b,x_rand,y_rand):
     n=0
-    x=random.randrange(20, dis_width-20, 10)
-    y=random.randrange(20, dis_width-20, 10)
-    while n==0:
-        for i in b:    
-            if i.collidepoint(x,y):
-                x=random.randrange(20, dis_width-20, 10)
-                y=random.randrange(20, dis_width-20, 10)
-                n=2
-                break
-        if n!=2:
-            n=1
-        else:
-            n=0
-    return x,y
+    for i in b:    
+        if i.collidepoint(x_rand,y_rand):
+            n=2
+            break
+    return n
 
-def sov_so_zm(dlin_zm,x,y):
-    n=0
-    while n==0:
-        for i in dlin_zm: 
-            if i != []:
-                x2=i[0]
-                y2=i[1]   
-                if abs(x2-x)<200 and abs(y2-y)<200:
-                    x=random.randrange(20, dis_width-20, 10)
-                    y=random.randrange(20, dis_width-20, 10)
-                    n=2
-                    break
-        if n!=2:
-            n=1
-        else:
-            n=0
-    return x,y
+def sov_so_zm(kor_sentr,b,x,y):
+    x_centr,y_centr=kor_sentr
+    kx=x_centr-x
+    ky=y_centr-y
+    try:
+        mnx=kx//abs(kx)
+    except ZeroDivisionError:
+        mnx=0
+    try:
+        mny=ky//abs(ky)
+    except ZeroDivisionError:
+        mny=0
+    if mnx<=0:
+        mnx=0
+    if mny<=0:
+        mny=0
+    n=2
+    while n==2:
+        x_rand=random.randrange((x_centr)*mnx+10, x_centr+(x_centr)*mnx-10,10)
+        y_rand=random.randrange((y_centr)*mny+10, y_centr+(y_centr)*mny-10,10)
+        n=na_prepat(b,x_rand,y_rand)
+    print(x_rand,y_rand)
+    return x_rand,y_rand
 
 def dvish_ed(x1,y1,x_rand,y_rand,snake_block):
     dx=x1-x_rand
@@ -155,6 +146,7 @@ def bespripat():
     vopr=vibor()
     time_0_m=time.time()
     time_0_p=time.time()
+    kor_sentr=[dis_width//2,dis_width//2]
     propusk=0
     dostup_portal=0
     nachal_dvish=0
@@ -288,9 +280,8 @@ def bespripat():
         
         #Временной промежуток магнита
         time_1=time.time()
-        if rand_vr_m-3 <= time_1-time_0_m <= rand_vr_m:
-            x_rand_magn,y_rand_magn=na_prepat(kor_prip,dis_width)
-            x_rand_magn, y_rand_magn=sov_so_zm(dlin_zm,x_rand_magn, y_rand_magn)
+        if rand_vr_m-0.1 <= time_1-time_0_m <= rand_vr_m:
+            x_rand_magn, y_rand_magn=sov_so_zm(kor_sentr,kor_prip,x1, y1)
         if rand_vr_m <= time_1-time_0_m <= rand_vr_m+15-math.sqrt(snake_speed) and nachal_dvish==0:
             magn=pygame.draw.circle(dis, green, (x_rand_magn, y_rand_magn), snake_block+5)
         try:
@@ -308,9 +299,8 @@ def bespripat():
             x_rand,y_rand,circle=dvish_ed(x1,y1,x_rand,y_rand,snake_block)
 
         #Рандомное время портала
-        if rand_vr_p-3 <= time_1-time_0_p <= rand_vr_p:
-            x_rand_port,y_rand_port=na_prepat(kor_prip,dis_width)
-            x_rand_port,y_rand_port=sov_so_zm(dlin_zm,x_rand_port,y_rand_port)
+        if rand_vr_p-0.1 <= time_1-time_0_p <= rand_vr_p:
+            x_rand_port,y_rand_port=sov_so_zm(kor_sentr,kor_prip,x1, y1)
         if rand_vr_p <= time_1-time_0_p <= rand_vr_p+15-math.sqrt(snake_speed):
             portal=pygame.draw.circle(dis,black,(x_rand_port,y_rand_port),20)
             pygame.draw.circle(dis,yellow,(x_rand_port-10,y_rand_port),5)
@@ -350,8 +340,8 @@ def bespripat():
         if nachal_dvish == 0:
             circle=pygame.draw.circle(dis, red, (x_rand, y_rand), snake_block)
         if (x1 == x_rand and y1 == y_rand and nachal_dvish==0) or (circle.collidepoint(x1,y1) and nachal_dvish==1):    
-            x_rand, y_rand=na_prepat(kor_prip,dis_width)
-            x_rand, y_rand=sov_so_zm(dlin_zm,x_rand, y_rand)
+            # x_rand, y_rand=na_prepat(kor_prip,dis_width)
+            x_rand, y_rand=sov_so_zm(kor_sentr,kor_prip,x1, y1)
             pribav=1
             if nachal_dvish==1:
                 time_0_m=time.time()
