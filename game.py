@@ -5,7 +5,6 @@ import math
 from line_profiler import LineProfiler
 profiler = LineProfiler()
 
- 
 pygame.init()
  
 white = (255, 255, 255)
@@ -42,7 +41,7 @@ def ris_zm(snake_block,dlin_zm,x1,y1):
 
 def pola(x1,y1):
     if x1 >= dis_width or x1 <= 0 or y1 >= dis_width or y1 <= 0:
-            return True 
+        return True 
 
 def bespola(x1,y1):
     if x1 >= dis_width:
@@ -103,7 +102,6 @@ def sov_so_zm(kor_sentr,b,x,y):
         x_rand=random.randrange((x_centr)*mnx+10, x_centr+(x_centr)*mnx-10,10)
         y_rand=random.randrange((y_centr)*mny+10, y_centr+(y_centr)*mny-10,10)
         n=na_prepat(b,x_rand,y_rand)
-    print(x_rand,y_rand)
     return x_rand,y_rand
 
 def dvish_ed(x1,y1,x_rand,y_rand,snake_block):
@@ -328,12 +326,9 @@ def bespripat():
                 if i.collidepoint(x1,y1):
                     game_close=True
         #Проверка на поля
-        if vopr==2:
+        if (vopr==2 or vopr==3) and game_close!=True:
             game_close=pola(x1,y1)
-        #Это нужно,чтобы были препятствия
-        elif vopr==3 and game_close!=True:
-            game_close=pola(x1,y1)
-        else:
+        elif vopr ==0 or vopr == 1:
             x1,y1=bespola(x1,y1) 
 
         #Рисует еду, съел еду
